@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1.0">
+    <title>Kasbi IM</title>
+    <link rel="stylesheet" href=
+"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+   
+    <!--<span class="loader">Load&nbsp;ng</span>*/ -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/miyagi.js"></script>
+
+    <div id="loader">
+        <canvas id="container" width="400" height="400"></canvas>
+        <style>
+            #loader {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #110f35; /* Changed to black */
+                z-index: 9999;
+            }
+            #container {
+                position: absolute;
+                width: 400px;
+                height: 400px;
+                margin: auto;
+                transform: rotate(45deg);
+                top: 0; bottom: 0; left: 0; right: 0;
+            }
+            #main-content {
+                display: none;
+            }
+        </style>
+   <script>
+    var points = [],
+    velocity2 = 5, // velocity squared
+    canvas = 
+document.getElementById('container'),
+  context = canvas.getContext('2d'),
+  radius = 3,
+  boundaryX = 400,
+  boundaryY = 400,
+  numberOfPoints = 250;
+
+init();
+
+function init() {
+  // create points
+  for (var i = 0; i<numberOfPoints; i++) {
+    createPoint();
+  }
+  // create connections
+  for (var i = 0, l=points.length; i<l; i++) {
+    var point = points[i];
+    if(i == 0) {
+      points[i].buddy = points[points.length-1];
+    } else {
+      points[i].buddy = points[i-1];
+    }
+  }
+  
+  // animate
+  animate();
+}
+
+function createPoint() {
+  var point = {}, vx2, vy2;
+  point.x = Math.random()*boundaryX;
+  point.y = Math.random()*boundaryY;
+  // random vx 
+  point.vx = (Math.floor(Math.random())*2-1)*Math.random();
+  vx2 = Math.pow(point.vx, 2);
+  // vy^2 = velocity^2 - vx^2
+  vy2 = velocity2 - vx2;
+  point.vy = Math.sqrt(vy2) * (Math.random()*2-1);
+  points.push(point);
+}
+
+function resetVelocity(point, axis, dir) {
+  var vx, vy;
+  if(axis == 'x') {
+    point.vx = dir*Math.random();  
+    vx2 = Math.pow(point.vx, 2);
+  // vy^2 = velocity^2 - vx^2
+  vy2 = velocity2 - vx2;
+  point.vy = Math.sqrt(vy2) * (Math.random()*2-1);
+  } else {
+    point.vy = dir*Math.random();  
+    vy2 = Math.pow(point.vy, 2);
+  // vy^2 = velocity^2 - vx^2
+  vx2 = velocity2 - vy2;
+  point.vx = Math.sqrt(vx2) * (Math.random()*2-1);
+  }
+}
+
+function drawCircle(x, y) {
+  context.beginPath();
+  context.arc(x, y, radius, 0, 2 * Math.PI, false);
+  context.fillStyle = '#0b3';
+  context.fill();  
+}
+
+function drawLine(x1, y1, x2, y2) {
+  context.beginPath();
+  context.moveTo(x1, y1);
+  context.lineTo(x2, y2);
+  context.strokeStyle = '#0ff'
+  context.stroke();
+} 
+function draw() {
+  for(var i =0, l=points.length; i<l; i++) {
+    // circles
+    var point = points[i];
+    point.x += point.vx;
+    point.y += point.vy;
+    drawCircle(point.x, point.y);
+    // lines
+    drawLine(point.x, point.y, point.buddy.x, point.buddy.y);
+    // check for edge
+    if(point.x < 0+radius) {
+      resetVelocity(point, 'x', 1);
+    } else if(point.x > boundaryX-radius) {
+      resetVelocity(point, 'x', -1);
+    } else if(point.y < 0+radius) {
+      resetVelocity(point, 'y', 1);
+    } else if(point.y > boundaryY-radius) {
+      resetVelocity(point, 'y', -1);
+    } 
+  }
+}
+
+function animate() {
+  context.clearRect ( 0 , 0 , 400 , 400 );
+  draw();
+  requestAnimationFrame(animate);
+}
+   </script>
+    </div>
+    <header class="header">
+        <a href="/">
+            <div class="mobile_logo-name">
+                <img src="logo.png" alt="School Logo" style='width:100px;height:100px;'>
+                <span class="school-name">Kasbi ixtisoslashtirilgan maktabi</span>
+            </div>
+        </a>
+        <nav class="navbar">
+            <ul class="navbar-lists" id="myTopnav">
+                <li>
+                      <i class="fas fa-home"></i>
+                          <a class="navbar-link home-link" href="#">
+                              Uy</a>
+                  </li>
+                <li>
+                      <i class="fas fa-user"></i>
+                          <a class="navbar-link about-link" 
+                           href="#about-us-section">
+                              Biz haqimizda
+                          </a>
+                </li>
+                <li>
+                      <i class="fas fa-envelope"></i>
+                          <a class="navbar-link contact-link" 
+                           href="#contact-form">
+                          Biz bilan bog'lanish
+                          </a>
+                  </li>
+                <li>
+                      <i class="fas fa-bullhorn"></i>
+                          <a class="navbar-link service-link" 
+                           href="#notice-bord-sction">
+                          Eslatmalar
+                          </a>
+                  </li>
+                <li><i class="fas fa-map-marked-alt"></i>
+                      <a class="navbar-link contact-link"
+                       href="#campus-on-map">
+                      Bizning manzil
+                      </a>
+                  </li>
+            </ul>
+            <a href="javascript:void(0);" 
+               class="icon" onclick="myFunction()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </nav>
+    </header>
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 10); // 3000 milliseconds = 3 seconds
+        });
+    </script>
+
+    <main>
+        <div class="school-img-container">
+            <div class="img-container">
+                <img src=
+"458331469_8243194672441595_8889900697311263490_n.jpg"
+                     alt="school img" class="school-img">
+                <h1 class="img-title">
+                  Kasbi ixtisoslashtirilgan maktabi web saytiga xush kelibsiz
+                  </h1>
+            </div>
+        </div>
+
+        <section id="vision">
+            <h2 class="vision-heading">Tarbiya biz uchun yo hayot – yo mamot, yo najot – yo halokat, yo saodat – yo falokat masalasidir</h2>
+        
+        </section>
+
+        <div class="main-notice-section" 
+             id="notice-bord-sction">
+            <div class="notice-container">
+                <div class="notice-bord">
+                    <h2 class="notice-bord-heading">
+                      Kasbi tuman ixtisoslashtirilgan maktabining Respublika fan olimpiadasi viloyat bosqichiga yoʻllanma olgan oʻquvchilari:
+                      </h2>
+                    <div>
+                        <ul>
+                            <li>
+                                <i></i>
+                                     
+                                      <span class="new-text">
+                                        <h5 >Ingliz tili</h5>
+                                        <h6>10-sinf:  🥇Salohiddinova Durdona</h6>
+                                        <h6>10-sinf:  🥉Xushvaqtova Tozagul</h6>
+                                        <h6>11-sinf:  🥉Roʻziqulova Mohlaroyim</h6>
+                                        
+                                        
+                                      </span>
+                            </li>
+                            <li>
+                                <i></i> 
+                                     
+                                      <span class="new-text"><h5>Kimyo</h5>
+                                        <h6>9-sinf:   🥇Abdurahimov Adham</h6>
+                                        <h6>9-sinf:   🥈Ergashov Elshod</h6>
+                                        <h6>10-sinf:  🥈Sobirova Diyora</h6>
+                                        <h6>11-sinf:  🥇Yusufov Shoxrux</h6>
+                                        <h6>11-sinf:  🥉Rajabboyeva Anfisa</h6>
+                                        <h6>11-sinf:  🥉Otamurodova Shabnam</h6>
+                                      </span>
+                            </li>
+                            <li>
+                                <i></i> 
+                                     
+                                      <span class="new-text">
+                                        <h5>Informatika</h5>
+                                        <h6>11-sinf:  🥇Maydonov Jahongir</h6>
+                                      </span>
+                            </li>
+
+                            <li>
+                              <i></i>
+                                   
+                                    <span class="new-text">
+                                      <h5>Biologiya</h5>
+                                      <h6>9-sinf:   🥈Davronov Shohmardon</h6>
+                                      <h6>10-sinf:  🥇Jo'rayeva Sevara</h6>
+                                      <h6>11-sinf:  🥇Sag'dullayeva E'zoza</h6>
+                                      <h6>11-sinf:  🥈Mahmudova Gulorom</h6>
+                                      
+                                      
+                                    </span>
+                          </li>
+                          <li>
+                            <i></i>
+                                 
+                                  <span class="new-text">
+                                    <h5>Fizika</h5>
+
+                                    <h6>11-sinf:  🥉Qurbonmurodov Jasur</h6>
+                                    
+                                    
+                                  </span>
+                        </li>
+                        <li>
+                          <i></i>
+                               
+                                <span class="new-text">
+                                  <h5>Matematika</h5>
+                                  <h6>9-sinf:   🥈Umurzoqova Gulbegim</h6>
+                                  <h6>9-sinf:  🥉Toxirov Hayotbek</h6>
+                                  <h6>10-sinf:  🥈Salimov Diyor</h6>
+
+                                </span>
+                      </li>
+                      <li>
+                        <i></i> 
+                             
+                              <span class="new-text">
+                                <h5>Ona tili</h5>
+                                <h6>11-sinf:  🥇Sharipova Shabbona</h6>
+                              </span>
+                    </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Events Section -->
+                <div class="event-card">
+                    <h2 class="event-heading"></h2>
+                    <div class="event-details">
+                        <div class="event">
+                            <h3>Yangiliklar</h3>
+                            <p></p>
+                            <p></p>
+                            <p></p>
+                            <p>
+                              <strong></strong> 
+                             
+                              </p>
+                        </div>
+                        <div class="event">
+                            <h3></h3>
+                            <p></p>
+                            <p></p>
+                            <p></p>
+                            <p>
+                                  <strong></strong> 
+                                 
+                              </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="about-us-section">
+            <div class="about-us-container">
+                <h2 class="aboutus-heading">Biz haqimizda</h2>
+                <h2>
+                    <strong class="subheading"> 
+                          Prezident ijod va ixtisoslashtirilgan maktablar tizimida tashkil etilgan Kasbi tuman  ixtisoslashtirilgan maktabi
+                          2022-yil tashkil topgan.
+                      </strong class>
+                    </h2>
+            </div>
+        </section>
+
+        <section class="our-school-map" id="campus-on-map">
+            <h2 class="location-heading">
+                  Bizning manzil:
+              </h2>
+             <center> <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2609.9940098707343!2d65.42685013598287!3d38.928012713617335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f4eeb7e83dfdfc3%3A0x68bc4b640cfa04a7!2s11-IDUM!5e0!3m2!1sen!2s!4v1728963890685!5m2!1sen!2s" width="1200" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>     
+</center>
+            
+              </iframe>
+        </section>
+
+        <section id="contact-form">
+            <h2 class="contact-form-heading">
+              Biz bilan bog'lanish
+              </h2>
+            <div class="container">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="fullName">
+                          Ism-familiya
+                          </label>
+                        <input type="text" id="fullName" 
+                               name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email"
+                               name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon raqam</label>
+                        <input type="text" id="phone" 
+                               name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Xabar berish</label>
+                        <textarea id="message" name="message" 
+                                  required>
+                          </textarea>
+                    </div>
+                    <button type="submit">Davom etish</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; created by Maydonov Jahongir & Bahodirov Asadbek</p>
+    </footer>
+
+    <script src="index.js"></script>
+
+</body>
+
+</html>
